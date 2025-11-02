@@ -85,3 +85,9 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     user: updatedUser,
   });
 });
+
+exports.getCheckoutSuccess = (req, res) => {
+  res.status(200).render('checkoutSuccess', {
+    title: 'Payment Successful',
+  });
+};

@@ -4,11 +4,16 @@ const pug = require('pug');
 const htmlToText = require('html-to-text').fromString;
 
 module.exports = class Email {
-  constructor(user, url) {
+  constructor(user, url, data = {}) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
     this.from = `Chirag Ginotra <${process.env.EMAIL_FROM}>`;
+
+    // custom dynamic data
+    this.tourName = data.tourName || '';
+    this.price = data.price || '';
+    this.date = data.date || '';
   }
 
   newTransport() {
@@ -40,6 +45,9 @@ module.exports = class Email {
       firstName: this.firstName,
       url: this.url,
       subject,
+      tourName: this.tourName,
+      price: this.price,
+      date: this.date,
     });
 
     // 2) Define email options
@@ -65,5 +73,9 @@ module.exports = class Email {
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)'
     );
+  }
+
+  async sendBookingConfirmation() {
+    await this.send('bookingConfirmation', 'Your Tour Booking is Confirmed!');
   }
 };

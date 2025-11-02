@@ -17,6 +17,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingController = require('./controllers/bookingController');
 
 const app = express();
 
@@ -43,6 +44,13 @@ console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Stripe webhook needs raw body
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 // Limit requests from same API
 const limiter = rateLimit({
